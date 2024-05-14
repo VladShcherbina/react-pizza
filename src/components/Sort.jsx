@@ -1,20 +1,34 @@
-import { useState } from "react"
+import { useState, useRef, useEffect } from "react"
+import { useSelector, useDispatch } from "react-redux"
+import { setSort } from "../redux/slices/filterSlice"
+
+export const list = [
+  {name: 'Популярности', sortProperty: 'rating' },
+  {name: 'Цене', sortProperty: 'price' },
+  {name: 'Алфавиту', sortProperty: 'title' } 
+]
 
 function Sort() {
-
+    const dispatch = useDispatch()
+    const sort = useSelector((state) => state.filter.sort)
+    const sortRef = useRef()
     const [isVisible, setIsVisible] = useState(false)
-    const [selected, setSelected] = useState(0)
-    
-    const list = ['Популярности', 'Цене', 'Алфавиту']
-    const sortName = list[selected]
-
-    const onClickListItem = (i) => {
-      setSelected(i)
+    const onClickListItem = (obj) => {
+      dispatch(setSort(obj))
       setIsVisible(false)
     }
 
+// useEffect(() => {
+//     document.body.addEventListener('click', (event) => {
+//       if(event.path.includes(sortRef.current)) {
+//         setIsVisible(false)
+//       }
+//       console.log(event)
+//     })
+//   }, [])
+
     return (
-      <div className="sort">
+      <div ref={sortRef} className="sort">
                 <div className="sort__label">
                   <svg
                     width="10"
@@ -29,15 +43,15 @@ function Sort() {
                     />
                   </svg>
                   <b>Сортировка по:</b>
-                  <span onClick={() => setIsVisible(!isVisible)}>{sortName}</span>
+                  <span onClick={() => setIsVisible(!isVisible)}>{sort.name}</span>
                 </div>
                 {isVisible && (<div className="sort__popup">
                 <ul>
-                  {list.map((name, i) =>
+                  {list.map((obj, i) =>
                     <li key={i} 
-                    onClick={() => onClickListItem(i)} 
-                    className={selected === i ? 'active' : ''}>
-                      {name}
+                    onClick={() => onClickListItem(obj)} 
+                    className={sort.sortProperty === obj.sortProperty ? 'active' : ''}>
+                      {obj.name}
                     </li>)}
                 </ul>
                 </div>)}
