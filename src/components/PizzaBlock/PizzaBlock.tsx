@@ -1,13 +1,23 @@
 import { useState } from "react"
-import { useDispatch,useSelector } from "react-redux"
+import { useSelector } from "react-redux"
 
 import { addItem } from "../../redux/slices/cartSlise"
+import { selectCartItemById } from "../../redux/slices/cartSlise"
+import { useAppDispatch } from "../../redux/store"
 
 const typeNames = ['Тонкое', 'Традиционное']
 
-function PizzaBlock({id, title, price, sizes, types}) {
-    const dispatch = useDispatch()
-    const cartItem = useSelector(state => state.cart.items.find(obj => obj.id === id))
+type PizzaBlockProps = {
+  id: string;
+  title: string;
+  price: number;
+  sizes: number[];
+  types: number[];
+}
+
+const PizzaBlock: React.FC<PizzaBlockProps> = ({id, title, price, sizes, types}) => {
+    const dispatch = useAppDispatch()
+    const cartItem = useSelector(selectCartItemById(id))
     const [activeType, setActiveType] = useState(0)
     const [activeSize, setActiveSize] = useState(0)
     const imageUrl = <img className="pizza-block__image" src="https://dodopizza-a.akamaihd.net/static/Img/Products/Pizza/ru-RU/b750f576-4a83-48e6-a283-5a8efb68c35d.jpg" alt="Pizza"/>
